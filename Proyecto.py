@@ -19,6 +19,22 @@ def getCursos():
         results= eval(r.text)
         return results
 
+def mostraCursos(lista1):#funcion creada para ordenar los registros de la lista recibida por el id
+    os.system("cls")
+    listaTemporal=[]
+    tempo=lista1
+    for p in tempo:
+        for t in lista1:
+            if len(listaTemporal)<len(lista1):
+                if (t[0]<p[0]) & (t not in listaTemporal):
+                    listaTemporal.append(t)
+
+    for s in listaTemporal:
+        print(s)
+
+
+    
+
 def listaEmociones():
     URL="http://leoviquez.synology.me/VisionAPI/cursos.py?id=6"
     os.system("cls")
@@ -44,9 +60,8 @@ def menu():
 
             if opcion == 1:
                 os.system("cls")
-                cursos=getCursos()
-                for p in cursos:
-                    print(p)
+                tempoCursos=getCursos()
+                mostraCursos(tempoCursos)
                 os.system("pause")
             elif opcion==2:
                 os.system("cls")
