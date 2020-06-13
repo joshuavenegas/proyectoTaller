@@ -48,7 +48,40 @@ def listaEmociones():
     input("Presione ENTER para continuar...")
 
 def detallesRegistro():
-    print(" 1.Detalle del registro\n","2.Estadísticas de reconocimiento\n","3. Regresar al menu principal")
+    print(" 1.Detalle del registro\n","2.Estadísticas de reconocimiento\n","3.Regresar al menu principal")
+
+def obtenerEstadisticas(id):
+    try:
+        URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={}".format(int(id))
+        r = requests.get(url = URL)
+        estadistica = eval(r.text)
+        estadistica=estadistica[0]
+        fechaResgistro=estadistica["fecha"]
+        informacionCurso=estadistica["curso"]
+        informacionRostro=estadistica["rostros"]
+        os.system("cls")
+        print("Hora de Registro  | Información del Curso                                                               | Cantidad de Rostros Reconocidos|\n"
+        ,"-----------------------------------------------------------------------------------------------------------------------------------------\n",
+        "{}:{}            |".format(fechaResgistro["hora"],fechaResgistro["minuto"],)
+        ,"codigo:{} grupo:{} curso:{} profesor:{} |".format(informacionCurso["codigo"],informacionCurso["grupo"],informacionCurso["Curso"],informacionCurso["profesor"])
+        ,"{}                              |".format(len(informacionRostro)))
+    except:
+        os.system("cls")
+        print("asegurese de haber digitado un registro válido")
+    os.system("pause")
+    opcion3()
+
+def opcion3():
+        os.system("cls")
+        detallesRegistro()
+        opcion2=int(input("Digite su opcion: "))
+        if opcion2==1:
+            os.system("cls")
+            registro=input("Digite el id del registro que desea ver: ")
+            obtenerEstadisticas(registro)
+            os.system("pause")
+        if opcion2==3:
+            menu()    
 
 def menu():
     opcion2=int(1)
@@ -73,11 +106,7 @@ def menu():
                     listaEmociones()
             
             elif opcion==3:
-                os.system("cls")
-                detallesRegistro()
-                opcion2=int(input("Digite su opcion: "))
-                if opcion2==3:
-                    menu()
+                opcion3()
             elif opcion==4:
                 break
             elif opcion!=1 and opcion!=2 and opcion !=3 and opcion!=4:
