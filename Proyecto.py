@@ -4,11 +4,21 @@
 import requests
 import os 
 from posixpath import join
+import datetime
 
 cursos=[(2, 'IC-1802', 'Introducción a la programación', 51, 'Abel Méndez Porras', 'I ', 2020), (5, 'IC-1803', 'Taller de programación', 51, 'Abel Méndez Porras', 'I ', 2020), (3, 'IC-1802', 'Introducción a la programación', 52, 'Leonardo Víquez Acuña', 'I ', 2020), (6, 'IC-1803', 'Taller de programación', 52, 'Leonardo Víquez Acuña', 'I ', 2020), (1, 'IC-1802', 'Introducción a la programación', 50, 'Vera Gamboa Guzman', 'I ', 2020), (4, 'IC-1803', 'Taller de programación', 50, 'Vera Gamboa Guzman', 'I ', 2020)]
 
 def opciones():
     print(" 1.Ver cursos disponibles\n","2.Ver listado del resgistro de emociones por curso\n","3.Ver detalles de registro de emociones\n","4. Salir del Sistema")
+
+def elMenor(listado):
+    l=listado[0]
+    menorP=datetime.datetime(int(l["Año"]),int(l["Mes"]),int(l["Dia"]),int(l["Hora"]),int(l["Minuto"]),int(l["Segundos"]))
+    
+    for z in listado:
+        if datetime.datetime(int(z["Año"]),int(z["Mes"]),int(z["Dia"]),int(z["Hora"]),int(z["Minuto"]),int(z["Segundos"])) < menorP:
+            l=z
+    return(l)
 
 def listadoEmociones():
     print(" 1.Listar registro de emociones\n","2.Regresar al menu principal")
@@ -32,20 +42,27 @@ def mostraCursos(lista1):#funcion creada para ordenar los registros de la lista 
     for s in listaTemporal:
         print(s)
 
-
-    
-
 def listaEmociones():
     URL="http://leoviquez.synology.me/VisionAPI/cursos.py?id=6"
     os.system("cls")
     r = requests.get(url = URL)
     resultados= eval(r.text)
-    cont=0
-    cantidad=len(resultados)
-    print ("        {0:10}{1:10} {2:10}{3:10}  {4:10}{5:10}{6:10}".format('ID','Dia','Mes','Año','Hora','Minuto','Segundos'))
+    lista=[]
+
     for z in resultados:
-         print ("{0:10}  {1:10}{2:10} {3:10}  {4:10} {5:10}   {6:10}".format(z[0],z[1],z[2],z[3],z[4],z[5],z[6]))
-    input("Presione ENTER para continuar...")
+        lista.append({"ID":z[0],"Dia":z[1],"Mes":z[2],"Año":z[3],"Hora":z[4],"Minuto":z[5],"Segundos":z[6]})
+    ListaOrdenada=[]
+
+    while len(lista)>0:
+        menor=elMenor(lista)
+        ListaOrdenada.append(menor)
+        lista.remove(menor)
+    print ("        {0:10}{1:10} {2:10}{3:10}  {4:10}{5:10}{6:10}".format('ID','Dia','Mes','Año','Hora','Minuto','Segundos'))
+
+    for z in ListaOrdenada:
+        print ("------------------------------------------------------------------------------------")
+        print ("{0:10}{1:10} {2:10} {3:10}  {4:10} {5:10} {6:10}".format(int(z["ID"]),int(z["Dia"]),int(z["Mes"]),int(z["Año"]),int(z["Hora"]),int(z["Minuto"]),int(z["Segundos"])))
+    os.system("pause")
 
 def detallesRegistro():
     print(" 1.Detalle del registro\n","2.Estadísticas de reconocimiento\n","3.Regresar al menu principal")
