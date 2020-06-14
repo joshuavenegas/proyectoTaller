@@ -124,32 +124,35 @@ def imprimirEmociones(emo,curso):
 #Funcion que se encarga de obtener el registro de expresiones(emociones) de un registro segun su id las emociones que se buscaran en el registro son: joy, sorrow, anger, surprise
 #luego segun los datos recolectados se enviarán a imprimir a otra función
 def obtenerEmociones(id):
+    try:
+        URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={}".format(int(id))
+        r = requests.get(url = URL)
+        estadistica = eval(r.text)
+        estadistica=estadistica[0]
+        rostros=estadistica["rostros"]
+        joy=0
+        sorrow=0
+        anger=0
+        surprise=0
 
-    URL = "http://leoviquez.synology.me/VisionAPI/index.py?id={}".format(int(id))
-    r = requests.get(url = URL)
-    estadistica = eval(r.text)
-    estadistica=estadistica[0]
-    rostros=estadistica["rostros"]
-    joy=0
-    sorrow=0
-    anger=0
-    surprise=0
-
-    for p in rostros:
-        expresiones=p["face_expressions"]
-        #se van sumando los porcentajes de cada expresion por cada cara reconocida
-        joy+=devolverPorcentaje(expresiones["joy_likelihood"])
-        sorrow+=devolverPorcentaje(expresiones["sorrow_likelihood"])
-        anger+=devolverPorcentaje(expresiones["anger_likelihood"])
-        surprise+=devolverPorcentaje(expresiones["surprise_likelihood"])
+        for p in rostros:
+            expresiones=p["face_expressions"]
+            #se van sumando los porcentajes de cada expresion por cada cara reconocida
+            joy+=devolverPorcentaje(expresiones["joy_likelihood"])
+            sorrow+=devolverPorcentaje(expresiones["sorrow_likelihood"])
+            anger+=devolverPorcentaje(expresiones["anger_likelihood"])
+            surprise+=devolverPorcentaje(expresiones["surprise_likelihood"])      
         
-    #se saca el promedio por emoción del registro 
-    surprise=surprise//len(rostros)
-    anger=anger//len(rostros)
-    sorrow=sorrow//len(rostros)
-    joy=joy//len(rostros)
-    emociones=[{"surprise":surprise,"anger":anger,"sorrow":sorrow,"joy":joy}]
-    imprimirEmociones(emociones,id)
+        #se saca el promedio por emoción del registro 
+        surprise=surprise//len(rostros)
+        anger=anger//len(rostros)
+        sorrow=sorrow//len(rostros)
+        joy=joy//len(rostros)
+        emociones=[{"surprise":surprise,"anger":anger,"sorrow":sorrow,"joy":joy}]
+        imprimirEmociones(emociones,id)
+    except:
+        os.system("cls")
+        print("porfavor digite un registro válido")  
     
 
 #se crea la función en caso de que la opcion del usuario sea la 1 Ver cursos disponibles
@@ -195,6 +198,7 @@ def menu():
         os.system("cls")
         opciones()
         try:
+
             opcion=int(input("Digite su opcion: "))
 
             if opcion == 1:#en caso de que la opcion sea la 1
